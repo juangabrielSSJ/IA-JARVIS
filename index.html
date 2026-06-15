@@ -115,74 +115,145 @@
     margin-top: 6px;
   }
 
-  /* Orb central */
-  .orb-container {
+  /* ── HUD JARVIS ── */
+  .hud-container {
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 300px;
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .orb-ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid var(--cyan-mid);
-    animation: rotate 8s linear infinite;
-  }
-
-  .orb-ring:nth-child(1) { width: 220px; height: 220px; animation-duration: 8s; border-color: var(--cyan-dim); }
-  .orb-ring:nth-child(2) { width: 180px; height: 180px; animation-duration: 5s; animation-direction: reverse; border-style: dashed; }
-  .orb-ring:nth-child(3) { width: 140px; height: 140px; animation-duration: 12s; border-color: var(--gold); opacity: 0.4; }
-
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .orb-core {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #00eeff, #0044aa, #001133);
-    box-shadow: 0 0 40px var(--cyan), 0 0 80px var(--cyan-mid), inset 0 0 30px #001133;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .hud-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Anillo exterior — gira lento */
+  .ring-outer { animation: rotCW 18s linear infinite; transform-origin: center; }
+  /* Anillo medio — gira al revés */
+  .ring-mid   { animation: rotCCW 10s linear infinite; transform-origin: center; }
+  /* Anillo interior — gira lento CW */
+  .ring-inner { animation: rotCW 25s linear infinite; transform-origin: center; }
+  /* Radar sweep */
+  .ring-radar { animation: rotCW 4s linear infinite; transform-origin: center; }
+
+  @keyframes rotCW  { from { transform: rotate(0deg);   } to { transform: rotate(360deg);  } }
+  @keyframes rotCCW { from { transform: rotate(0deg);   } to { transform: rotate(-360deg); } }
+
+  /* Core central */
+  .hud-core {
     position: relative;
-    z-index: 2;
+    z-index: 10;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #003d66, #001428, #000a14);
+    border: 1.5px solid rgba(0,212,255,0.5);
+    box-shadow: 0 0 30px rgba(0,212,255,0.4), 0 0 60px rgba(0,212,255,0.15), inset 0 0 20px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: box-shadow 0.3s;
   }
 
-  .orb-core:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 60px var(--cyan), 0 0 100px var(--cyan-mid);
+  .hud-core:hover {
+    box-shadow: 0 0 50px rgba(0,212,255,0.7), 0 0 100px rgba(0,212,255,0.3), inset 0 0 20px rgba(0,0,0,0.8);
   }
 
-  /* Estado de escucha */
-  .orb-core.listening {
-    animation: listening-pulse 1s ease-in-out infinite;
-    box-shadow: 0 0 60px var(--danger), 0 0 100px #ff446688;
-    background: radial-gradient(circle at 35% 35%, #ff6688, #aa0022, #330011);
+  .hud-core.listening {
+    border-color: var(--danger);
+    box-shadow: 0 0 40px rgba(255,68,102,0.7), 0 0 80px rgba(255,68,102,0.3), inset 0 0 20px rgba(0,0,0,0.8);
+    animation: listening-pulse 0.8s ease-in-out infinite;
   }
 
-  .orb-core.speaking {
+  .hud-core.speaking {
+    border-color: var(--gold);
+    box-shadow: 0 0 40px rgba(240,192,64,0.6), 0 0 80px rgba(240,192,64,0.2), inset 0 0 20px rgba(0,0,0,0.8);
     animation: speaking-pulse 0.5s ease-in-out infinite;
-    box-shadow: 0 0 60px var(--gold), 0 0 100px var(--gold-dim);
-    background: radial-gradient(circle at 35% 35%, #ffe066, #aa8800, #332200);
   }
 
   @keyframes listening-pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
+    50% { transform: scale(1.06); }
   }
-
   @keyframes speaking-pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.04); }
+    50% { transform: scale(1.03); }
+  }
+
+  .hud-label-top {
+    font-family: 'Orbitron', monospace;
+    font-size: 7px;
+    letter-spacing: 3px;
+    color: rgba(0,212,255,0.6);
+    text-transform: uppercase;
+  }
+
+  .hud-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan);
+    line-height: 1;
+  }
+
+  .hud-sub {
+    font-family: 'Orbitron', monospace;
+    font-size: 5.5px;
+    letter-spacing: 2px;
+    color: rgba(0,212,255,0.5);
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.4;
+    padding: 0 8px;
+  }
+
+  .hud-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    animation: blink 1.5s ease-in-out infinite;
+    margin-top: 2px;
+  }
+
+  .hud-status-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 6px;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    text-transform: uppercase;
+  }
+
+  .hud-status-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Pulso de fondo */
+  .hud-pulse {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.15);
+    animation: expandPulse 3s ease-out infinite;
+  }
+  .hud-pulse:nth-child(2) { animation-delay: 1s; }
+  .hud-pulse:nth-child(3) { animation-delay: 2s; }
+
+  @keyframes expandPulse {
+    0%   { width: 110px; height: 110px; opacity: 0.6; }
+    100% { width: 300px; height: 300px; opacity: 0; }
   }
 
   /* Barra de estado */
@@ -586,12 +657,92 @@
     <div class="tagline">Consejera de Aprendizaje e Innovación</div>
   </div>
 
-  <!-- Orb -->
-  <div class="orb-container">
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-core" id="orb" onclick="toggleListen()">🎙️</div>
+  <!-- HUD JARVIS -->
+  <div class="hud-container" onclick="toggleListen()">
+    <!-- Pulsos de fondo -->
+    <div class="hud-pulse"></div>
+    <div class="hud-pulse"></div>
+    <div class="hud-pulse"></div>
+
+    <!-- SVG anillos -->
+    <svg class="hud-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Anillo exterior con marcas de graduación -->
+      <g class="ring-outer" filter="url(#glow)">
+        <circle cx="150" cy="150" r="142" fill="none" stroke="rgba(0,212,255,0.25)" stroke-width="1"/>
+        <circle cx="150" cy="150" r="138" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="0.5" stroke-dasharray="3 6"/>
+        <!-- Marcas cada 5 grados -->
+        <g id="ticks-outer" stroke="rgba(0,212,255,0.5)" stroke-width="1">
+          <script type="text/javascript">
+          <!-- generado via JS abajo -->
+          </script>
+        </g>
+        <!-- Arcos destacados -->
+        <path d="M 150 8 A 142 142 0 0 1 270 75" fill="none" stroke="rgba(0,212,255,0.8)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 292 185 A 142 142 0 0 1 200 292" fill="none" stroke="rgba(0,212,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 60 270 A 142 142 0 0 1 10 150" fill="none" stroke="rgba(0,212,255,0.4)" stroke-width="1" stroke-linecap="round"/>
+      </g>
+
+      <!-- Anillo medio con dashes -->
+      <g class="ring-mid" filter="url(#glow)">
+        <circle cx="150" cy="150" r="118" fill="none" stroke="rgba(0,212,255,0.2)" stroke-width="1" stroke-dasharray="8 4"/>
+        <circle cx="150" cy="150" r="122" fill="none" stroke="rgba(0,212,255,0.35)" stroke-width="1.5"/>
+        <!-- Marcadores en cruz -->
+        <line x1="150" y1="28" x2="150" y2="42" stroke="rgba(0,212,255,0.9)" stroke-width="2.5"/>
+        <line x1="150" y1="258" x2="150" y2="272" stroke="rgba(0,212,255,0.9)" stroke-width="2.5"/>
+        <line x1="28"  y1="150" x2="42"  y2="150" stroke="rgba(0,212,255,0.9)" stroke-width="2.5"/>
+        <line x1="258" y1="150" x2="272" y2="150" stroke="rgba(0,212,255,0.9)" stroke-width="2.5"/>
+        <!-- Marcadores diagonales -->
+        <line x1="67"  y1="67"  x2="77"  y2="77"  stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+        <line x1="233" y1="67"  x2="223" y2="77"  stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+        <line x1="67"  y1="233" x2="77"  y2="223" stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+        <line x1="233" y1="233" x2="223" y2="223" stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+        <!-- Números -->
+        <text x="150" y="22"  text-anchor="middle" font-family="Orbitron,monospace" font-size="7" fill="rgba(0,212,255,0.7)">90</text>
+        <text x="150" y="284" text-anchor="middle" font-family="Orbitron,monospace" font-size="7" fill="rgba(0,212,255,0.7)">270</text>
+        <text x="18"  y="154" text-anchor="middle" font-family="Orbitron,monospace" font-size="7" fill="rgba(0,212,255,0.7)">180</text>
+        <text x="282" y="154" text-anchor="middle" font-family="Orbitron,monospace" font-size="7" fill="rgba(0,212,255,0.7)">0</text>
+        <text x="72"  y="62"  text-anchor="middle" font-family="Orbitron,monospace" font-size="6" fill="rgba(0,212,255,0.5)">135</text>
+        <text x="228" y="62"  text-anchor="middle" font-family="Orbitron,monospace" font-size="6" fill="rgba(0,212,255,0.5)">45</text>
+        <text x="72"  y="244" text-anchor="middle" font-family="Orbitron,monospace" font-size="6" fill="rgba(0,212,255,0.5)">225</text>
+        <text x="228" y="244" text-anchor="middle" font-family="Orbitron,monospace" font-size="6" fill="rgba(0,212,255,0.5)">315</text>
+      </g>
+
+      <!-- Radar sweep -->
+      <g class="ring-radar">
+        <path d="M 150 150 L 150 35" stroke="rgba(0,212,255,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 150 150 L 150 35" stroke="rgba(0,212,255,0.1)" stroke-width="30" stroke-linecap="round"
+              style="transform-origin:150px 150px; transform:rotate(-15deg)"/>
+      </g>
+
+      <!-- Anillo interior -->
+      <g class="ring-inner" filter="url(#glow)">
+        <circle cx="150" cy="150" r="88" fill="none" stroke="rgba(0,212,255,0.18)" stroke-width="1" stroke-dasharray="2 8"/>
+        <circle cx="150" cy="150" r="84" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+        <!-- Triángulo interior -->
+        <polygon points="150,72 218,188 82,188" fill="none" stroke="rgba(0,212,255,0.12)" stroke-width="1"/>
+        <!-- Líneas de cuadrícula -->
+        <line x1="150" y1="62" x2="150" y2="238" stroke="rgba(0,212,255,0.08)" stroke-width="0.5"/>
+        <line x1="62"  y1="150" x2="238" y2="150" stroke="rgba(0,212,255,0.08)" stroke-width="0.5"/>
+      </g>
+    </svg>
+
+    <!-- Core central clickeable -->
+    <div class="hud-core" id="orb">
+      <div class="hud-label-top">C.A.L.I</div>
+      <div class="hud-name">AI</div>
+      <div class="hud-sub">CONSEJERA DE<br>APRENDIZAJE</div>
+      <div class="hud-status-row">
+        <div class="hud-status-dot" id="hudDot"></div>
+        <div class="hud-status-label" id="hudStatusLabel">ONLINE</div>
+      </div>
+    </div>
   </div>
 
   <!-- Estado -->
@@ -927,11 +1078,11 @@ function speak(text) {
 
   utterance.onend = () => {
     isSpeaking = false;
-    // Si wake word está activo, volver a escuchar automáticamente
-    if (wakeWordActivo) {
-      setTimeout(() => startWakeWordListening(), 400);
+    if (wakeWordActivo && !isListening) {
+      setTimeout(() => arrancarWakeRecognition(), 600);
+      setStatus('active', '👂 Esperando "Oye CALI"...');
     } else {
-      setStatus('idle', 'Sistema en espera · Di "Oye CALI" para activar');
+      setStatus('idle', 'Sistema en espera · Decí "Oye CALI" para activar');
       setOrbState('idle');
     }
   };
@@ -947,26 +1098,35 @@ function speak(text) {
 }
 
 // ============================================================
-// WAKE WORD — "Oye CALI" o "CALI"
+// ============================================================
+// WAKE WORD — modo continuo real
 // ============================================================
 let wakeWordActivo = false;
 let wakeRecognition = null;
 let escuchandoComando = false;
+let wakeRestartTimer = null;
 
 function iniciarWakeWord() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
-
+  if (!SR) {
+    addMessage('cali', 'Tu navegador no soporta reconocimiento continuo. Usá Chrome en Android.');
+    return;
+  }
   wakeWordActivo = true;
   document.getElementById('wakeBtn').textContent = '🔴 Desactivar "Oye CALI"';
   document.getElementById('wakeBtn').style.borderColor = 'var(--danger)';
   document.getElementById('wakeBtn').style.color = 'var(--danger)';
-  startWakeWordListening();
+  addMessage('cali', 'Modo manos libres activado. Decí "Oye CALI" o "CALI" cuando quieras hablar.');
+  arrancarWakeRecognition();
 }
 
 function detenerWakeWord() {
   wakeWordActivo = false;
-  if (wakeRecognition) wakeRecognition.stop();
+  clearTimeout(wakeRestartTimer);
+  if (wakeRecognition) {
+    try { wakeRecognition.stop(); } catch(e) {}
+    wakeRecognition = null;
+  }
   document.getElementById('wakeBtn').textContent = '🎤 Activar "Oye CALI"';
   document.getElementById('wakeBtn').style.borderColor = '';
   document.getElementById('wakeBtn').style.color = '';
@@ -978,47 +1138,72 @@ function toggleWakeWord() {
   else iniciarWakeWord();
 }
 
-function startWakeWordListening() {
+function arrancarWakeRecognition() {
   if (!wakeWordActivo || isSpeaking || isListening) return;
 
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   wakeRecognition = new SR();
   wakeRecognition.lang = 'es-BO';
-  wakeRecognition.continuous = false;
-  wakeRecognition.interimResults = false;
-  wakeRecognition.maxAlternatives = 5;
+  // continuous:true mantiene el mic abierto sin parar
+  wakeRecognition.continuous = true;
+  wakeRecognition.interimResults = true; // resultados parciales para más velocidad
+  wakeRecognition.maxAlternatives = 3;
 
   wakeRecognition.onresult = (e) => {
-    const transcripts = Array.from(e.results[0]).map(r => r.transcript.toLowerCase());
-    const textoDetectado = transcripts.join(' ');
-    console.log('Wake word escuchó:', textoDetectado);
+    if (escuchandoComando || isListening || isSpeaking) return;
 
-    const palabrasClave = ['cali', 'oye cali', 'hey cali', 'kali', 'calli'];
-    const detectado = palabrasClave.some(p => textoDetectado.includes(p));
+    // Revisar todos los resultados nuevos
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const transcript = e.results[i][0].transcript.toLowerCase().trim();
 
-    if (detectado && !escuchandoComando) {
-      // Wake word detectado — activar para escuchar el comando
-      escuchandoComando = true;
-      speak('Dime'); // CALI responde brevemente
-      setTimeout(() => {
-        escuchandoComando = false;
-        if (wakeWordActivo) startListening();
-      }, 1200);
-    } else if (!detectado) {
-      // No era la wake word, seguir escuchando
-      setTimeout(() => startWakeWordListening(), 300);
+      const palabrasClave = ['cali', 'oye cali', 'hey cali', 'kali', 'calli', 'caly'];
+      const detectado = palabrasClave.some(p => transcript.includes(p));
+
+      if (detectado) {
+        console.log('✅ Wake word detectada:', transcript);
+        escuchandoComando = true;
+
+        // Detener wake recognition temporalmente
+        try { wakeRecognition.stop(); } catch(e) {}
+
+        // CALI responde y luego escucha el comando
+        setOrbState('speaking');
+        setStatus('speaking', 'CALI activada...');
+
+        const utterance = new SpeechSynthesisUtterance('Dime');
+        utterance.lang = 'es-419';
+        utterance.rate = 1.0;
+        if (bestVoice) utterance.voice = bestVoice;
+
+        utterance.onend = () => {
+          escuchandoComando = false;
+          if (wakeWordActivo) {
+            // Ahora escuchar el comando real
+            startListening();
+          }
+        };
+
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+        break;
+      }
     }
   };
 
-  wakeRecognition.onerror = () => {
-    if (wakeWordActivo && !isSpeaking) {
-      setTimeout(() => startWakeWordListening(), 1000);
+  wakeRecognition.onerror = (e) => {
+    console.log('Wake error:', e.error);
+    if (!wakeWordActivo) return;
+    // Reiniciar automáticamente en caso de error
+    if (e.error !== 'aborted') {
+      wakeRestartTimer = setTimeout(() => arrancarWakeRecognition(), 1500);
     }
   };
 
   wakeRecognition.onend = () => {
-    if (wakeWordActivo && !isSpeaking && !isListening && !escuchandoComando) {
-      setTimeout(() => startWakeWordListening(), 300);
+    if (!wakeWordActivo || escuchandoComando || isListening) return;
+    // En móvil el continuous se detiene solo — reiniciar inmediatamente
+    if (!isSpeaking) {
+      wakeRestartTimer = setTimeout(() => arrancarWakeRecognition(), 500);
     }
   };
 
@@ -1026,7 +1211,8 @@ function startWakeWordListening() {
     wakeRecognition.start();
     setStatus('active', '👂 Esperando "Oye CALI"...');
   } catch(e) {
-    setTimeout(() => startWakeWordListening(), 1000);
+    console.log('Error al iniciar wake:', e);
+    wakeRestartTimer = setTimeout(() => arrancarWakeRecognition(), 1500);
   }
 }
 
@@ -1045,10 +1231,26 @@ function setStatus(type, text) {
 
 function setOrbState(state) {
   const orb = document.getElementById('orb');
-  orb.className = 'orb-core';
-  const icons = { idle: '🎙️', listening: '🔴', thinking: '⚡', speaking: '🔊' };
-  if (state !== 'idle') orb.classList.add(state === 'thinking' ? 'speaking' : state);
-  orb.textContent = icons[state] || '🎙️';
+  const dot = document.getElementById('hudDot');
+  const lbl = document.getElementById('hudStatusLabel');
+
+  orb.className = 'hud-core';
+
+  const states = {
+    idle:     { cls: '',          dotColor: 'var(--cyan)',   label: 'ONLINE',      dotAnim: '1.5s' },
+    listening:{ cls: 'listening', dotColor: 'var(--danger)', label: 'ESCUCHANDO',  dotAnim: '0.4s' },
+    thinking: { cls: 'speaking',  dotColor: 'var(--gold)',   label: 'PROCESANDO',  dotAnim: '0.3s' },
+    speaking: { cls: 'speaking',  dotColor: 'var(--gold)',   label: 'HABLANDO',    dotAnim: '0.3s' },
+  };
+
+  const s = states[state] || states.idle;
+  if (s.cls) orb.classList.add(s.cls);
+  if (dot) {
+    dot.style.background = s.dotColor;
+    dot.style.boxShadow = `0 0 8px ${s.dotColor}`;
+    dot.style.animationDuration = s.dotAnim;
+  }
+  if (lbl) lbl.textContent = s.label;
 }
 
 function addMessage(role, text) {
