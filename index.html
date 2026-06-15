@@ -710,7 +710,7 @@ function lockSetProvider(provider) {
   fields.classList.toggle('show', provider === 'elevenlabs');
 }
 
-function unlock() {
+async function unlock() {
   const groqKey = document.getElementById('lockGroqKey').value.trim();
   const err = document.getElementById('lockErr');
 
@@ -731,13 +731,30 @@ function unlock() {
 
   config.groqKey = groqKey;
   config.voiceProvider = lockVoiceProvider;
-  err.textContent = '';
+
+  // Pedir permiso de micrófono desde el gesto del usuario (clic en botón)
+  err.textContent = '⟳ Solicitando permiso de micrófono...';
+  err.style.color = 'var(--cyan)';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop());
+    err.textContent = '';
+    err.style.color = 'var(--danger)';
+  } catch (e) {
+    err.style.color = 'var(--danger)';
+    if (e.name === 'NotAllowedError') {
+      err.textContent = '⚠ Permiso denegado. Permitilo en el candado de la barra del navegador.';
+    } else {
+      err.textContent = '⚠ Sin micrófono: ' + e.message;
+    }
+    return;
+  }
 
   document.getElementById('lockScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 
   setupRecognition();
-  setStatus('idle', 'Sistema listo');
+  setStatus('idle', 'Sistema listo · Micrófono activo ✓');
 
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     document.getElementById('compatWarning').style.display = 'block';
